@@ -1,0 +1,11 @@
+dbt-core==1.9.0
+dbt-postgres==1.9.0
+dbt-bigquery==1.9.0
+
+# astronomer-cosmos
+# sqlfluff
+# sqlfluff-templater-dbt
+# ruff
+# pre-commit
+# pytest
+# fabric

@@ -1,0 +1,6 @@
+venv/
+data/
+gcp/
+credential.yaml
+.env
+__pycache__/
