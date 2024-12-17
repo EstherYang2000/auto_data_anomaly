@@ -21,3 +21,27 @@ dcard:
       schema: staging  # Schema where dbt will create tables; adjust if needed
       threads: 4
   target: postgres_dev
+elementary:
+  outputs:
+    dev:
+      dataset: dcard-444807.dcard_app
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      keyfile: /Users/yangyujie/Documents/dcard/auto_data_anomaly/gcp/dcard-444807-532e508619ed.json
+      location: asia-east1
+      method: service-account
+      priority: interactive
+      project: dcard-444807
+      threads: 4
+      type: bigquery
+    postgres_dev:
+      type: postgres
+      host: localhost   # Replace with your PostgreSQL host, e.g., localhost or an IP address
+      user: postgres   # Replace with your PostgreSQL username
+      password: postgres  # Replace with your PostgreSQL password
+      port: 5433
+      dbname: dcard  # Replace with your PostgreSQL database name
+      schema: staging  # Schema where dbt will create tables; adjust if needed
+      threads: 4
+  target: postgres_dev
+

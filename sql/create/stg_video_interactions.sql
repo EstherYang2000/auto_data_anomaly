@@ -1,4 +1,4 @@
-CREATE TABLE video_interactions (
+CREATE TABLE staging.video_interactions (
     id SERIAL PRIMARY KEY, -- Auto-incrementing primary key
     event_id VARCHAR(255),
     created_at TIMESTAMP NOT NULL,

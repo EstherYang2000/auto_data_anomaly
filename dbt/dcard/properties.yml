@@ -1,0 +1,53 @@
+# version: 2
+
+# models:
+#   - name: stg_video_interactions
+#     description: "Staging model for video interactions."
+#     config:
+#       elementary:
+#         timestamp_column: interaction_timestamp  # Adjust if necessary
+#     tests:
+#       - elementary.table_anomalies
+#       - elementary.all_columns_anomalies
+
+#   - name: int_daily_anomalies
+#     description: "Intermediate model calculating daily anomalies."
+#     config:
+#       elementary:
+#         timestamp_column: anomaly_date
+#     tests:
+#       - elementary.table_anomalies
+#       - elementary.all_columns_anomalies
+#     columns:
+#       - name: anomaly_score
+#         description: "Anomaly score for the day."
+#         tests:
+#           - elementary.column_anomalies
+
+#   - name: int_video_events
+#     description: "Intermediate model for video events."
+#     config:
+#       elementary:
+#         timestamp_column: event_timestamp  # Adjust if necessary
+#     tests:
+#       - elementary.table_anomalies
+#       - elementary.all_columns_anomalies
+#     columns:
+#       - name: event_count
+#         description: "Count of events."
+#         tests:
+#           - elementary.column_anomalies
+
+#   - name: mart_video_anomalies
+#     description: "Mart model consolidating video anomalies."
+#     config:
+#       elementary:
+#         timestamp_column: anomaly_date
+#     tests:
+#       - elementary.table_anomalies
+#       - elementary.all_columns_anomalies
+#     columns:
+#       - name: daily_anomaly_flag
+#         description: "Flag for daily anomaly."
+#         tests:
+#           - elementary.column_anomalies

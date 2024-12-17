@@ -4,3 +4,8 @@ gcp/
 credential.yaml
 .env
 __pycache__/
+*.log
+logs/
+*.html
+edr_target/
+logs/dbt.log

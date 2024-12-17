@@ -1,0 +1,6 @@
+dbt_profiles_dir: profiles.yml
+monitor:
+  slack:
+    token: xoxb-8171168589846-8200667728080-QrBMxmU3EpPFqfYmjGqXuvZi
+    channel_name: dbt
+    webhook_url: https://hooks.slack.com/services/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

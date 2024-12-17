@@ -1,0 +1,79 @@
+version: 2
+
+sources:
+  - name: dcard
+    description: "Raw video interaction data for anomaly detection"
+    database: "{{ target.database }}"
+    schema: staging
+    tables:
+      - name: video_interactions
+        description: >
+          The video_interactions table contains raw video playback data
+          including user actions like play, pause, and metadata related
+          to iOS app versions. This table will be used for anomaly detection.
+
+        # Global timestamp_column for anomaly tests
+        tests:
+          - elementary.freshness_anomalies:
+                  timestamp_column: created_at  # Mandatory
+                  time_bucket:
+                    period: hour
+                    count: 1  # Detect anomalies for up to 120 days
+                  where_expression: "created_at IS NOT NULL"  # Optional filter
+
+        columns:
+          - name: id
+            description: "Unique identifier for a video interaction event."
+            tests:
+              - not_null
+              - unique
+              - elementary.column_anomalies
+
+          - name: created_at
+            description: "UTC timestamp when the video event occurred."
+            tests:
+              - not_null
+              - elementary.column_anomalies
+              
+
+          - name: event_id
+            description: "Unique identifier for a video viewing session."
+            tests:
+              - not_null
+              - elementary.column_anomalies
+
+          - name: app_version
+            description: "Version number of the iOS app when the event occurred."
+            tests:
+              - not_null
+              - elementary.column_anomalies
+
+          - name: action
+            description: >
+              Type of action performed by the user during video playback.
+              Expected values: 'auto_play', 'manual_play', 'replay', 'pause'.
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['auto_play', 'manual_play', 'replay', 'pause']
+                  config:
+                    severity: warn
+              - elementary.column_anomalies
+
+          - name: client_id
+            description: "Unique identifier for the device or client."
+            tests:
+              - not_null
+              - elementary.column_anomalies
+
+          - name: media_id
+            description: "Unique identifier for the video being played."
+            tests:
+              - not_null
+              - elementary.column_anomalies
+
+          - name: user_id
+            description: "Unique identifier for the user interacting with the video."
+            tests:
+              - not_null
+              - elementary.column_anomalies
