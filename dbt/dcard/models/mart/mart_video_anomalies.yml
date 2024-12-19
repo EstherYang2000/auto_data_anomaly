@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: mart_video_anomalies
+    description: "Model identifying anomalies based on event count and avg duration."
+    tests:
+      - elementary.column_anomalies:
+          config:
+            severity: warn  # Test for anomalies in columns
+      - elementary.volume_anomalies:
+          timestamp_column: event_date
+          time_bucket:
+            period: week
+            count: 1
+          training_period:
+            period: month
+            count: 3
+          detection_period:
+            period: month
+            count: 6
+          anomaly_sensitivity: 1
+          anomaly_direction: both
+          where_expression: "final_anomaly_type != 'Normal'"
+
+    columns:
+      - name: event_date
+        description: "The date for the anomalies."
+        tests:
+          - not_null
+          - elementary.column_anomalies:
+              config:
+                severity: warn
+
+      - name: app_version
+        description: "The application version."
+        tests:
+          - not_null
+
+      - name: final_anomaly_type
+        description: "Final combined anomaly type."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Normal', 'Low Event Count Anomaly', 'High Avg Duration Anomaly', 'Both Event Count & Avg Duration Anomaly']
+              config:
+                severity: warn

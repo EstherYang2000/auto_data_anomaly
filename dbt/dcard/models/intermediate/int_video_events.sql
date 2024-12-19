@@ -4,7 +4,7 @@
 ) }}
 
 WITH base AS (
-    SELECT *
+    SELECT DISTINCT*
     FROM {{ ref('stg_video_interactions') }}  -- 正確引用 Staging 層的模型
 ),
 lagged_actions AS (

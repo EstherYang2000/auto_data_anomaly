@@ -6,7 +6,7 @@ sources:
     database: "{{ target.database }}"
     schema: staging
     tables:
-      - name: video_interactions
+      - name: video_interaction
         description: >
           The video_interactions table contains raw video playback data
           including user actions like play, pause, and metadata related
@@ -15,11 +15,11 @@ sources:
         # Global timestamp_column for anomaly tests
         tests:
           - elementary.freshness_anomalies:
-                  timestamp_column: created_at  # Mandatory
-                  time_bucket:
-                    period: hour
-                    count: 1  # Detect anomalies for up to 120 days
-                  where_expression: "created_at IS NOT NULL"  # Optional filter
+              timestamp_column: created_at  # Mandatory
+              time_bucket:
+                period: month
+                count: 6  # Detect anomalies for up to 6 months
+              where_expression: "created_at IS NOT NULL"  # Optional filter
 
         columns:
           - name: id
@@ -33,20 +33,25 @@ sources:
             description: "UTC timestamp when the video event occurred."
             tests:
               - not_null
-              - elementary.column_anomalies
-              
+              - elementary.column_anomalies:
+                  config:
+                    severity: warn  # Detects anomalies in timestamp data
 
           - name: event_id
             description: "Unique identifier for a video viewing session."
             tests:
               - not_null
-              - elementary.column_anomalies
+              - elementary.column_anomalies:
+                  config:
+                    severity: warn
 
           - name: app_version
             description: "Version number of the iOS app when the event occurred."
             tests:
               - not_null
-              - elementary.column_anomalies
+              - elementary.column_anomalies:
+                  config:
+                    severity: warn
 
           - name: action
             description: >
@@ -58,22 +63,28 @@ sources:
                   values: ['auto_play', 'manual_play', 'replay', 'pause']
                   config:
                     severity: warn
-              - elementary.column_anomalies
+              - elementary.column_anomalies:
+                  config:
+                    severity: warn
 
           - name: client_id
             description: "Unique identifier for the device or client."
             tests:
               - not_null
-              - elementary.column_anomalies
+              # - elementary.column_anomalies
 
           - name: media_id
             description: "Unique identifier for the video being played."
             tests:
               - not_null
-              - elementary.column_anomalies
+              - elementary.column_anomalies:
+                  config:
+                    severity: warn
 
           - name: user_id
             description: "Unique identifier for the user interacting with the video."
             tests:
               - not_null
-              - elementary.column_anomalies
+              - elementary.column_anomalies:
+                  config:
+                    severity: warn

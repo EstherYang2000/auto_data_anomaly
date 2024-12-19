@@ -1,0 +1,146 @@
+version: 2
+
+models:
+  - name: int_daily_anomalies
+    description: "Daily aggregated anomalies for video events."
+    tests:
+      # - elementary.value_anomalies:
+      #     where_expression: "event_count IS NOT NULL AND avg_duration_seconds IS NOT NULL"
+      #     anomaly_sensitivity: 2
+      #     config:
+      #       severity: warn
+      - elementary.volume_anomalies:
+          timestamp_column: event_date  # Fixed: Use a valid timestamp column
+          time_bucket:
+            period: week
+            count: 1
+          training_period:
+            period: month
+            count: 3
+          detection_period:
+            period: month
+            count: 6
+          anomaly_sensitivity: 2
+          anomaly_direction: both
+          where_expression: "event_count IS NOT NULL"  # Optional filter
+          
+    columns:
+      - name: event_date
+        description: "The date when video events were aggregated"
+        tests:
+          - not_null
+          - elementary.column_anomalies:
+              config:
+                severity: warn
+      - name: app_version
+        description: "Application version corresponding to the video events."
+        tests:
+          - not_null
+          - elementary.column_anomalies:
+              config:
+                severity: warn
+      - name: event_count
+        description: "Total number of events recorded for the given day and app version."
+        tests:
+          - not_null
+          - elementary.column_anomalies:
+              column_anomalies:
+                - average
+                - zero_count
+              anomaly_direction: both
+              time_bucket:
+                period: week
+                count: 1
+              training_period:
+                period: month
+                count: 3
+              detection_period:
+                period: month
+                count: 6
+              anomaly_sensitivity: 2
+              anomaly_direction: both
+              config:
+                severity: warn
+      - name: avg_duration_seconds
+        description: "Average duration in seconds of video play actions for the day."
+        tests:
+          - not_null
+          - elementary.column_anomalies:
+              column_anomalies:
+                - average
+                # - zero_count
+              time_bucket:
+                period: week
+                count: 1
+              training_period:
+                period: month
+                count: 3
+              detection_period:
+                period: month
+                count: 6
+              anomaly_sensitivity: 2
+              config:
+                severity: warn
+          # - elementary.value_anomalies:
+          #     where_expression: "avg_duration_seconds > 0"
+          #     anomaly_sensitivity: 2
+          #     config:
+          #       severity: warn
+      - name: max_duration_seconds
+        description: "Maximum duration in seconds of video play actions for the day."
+        tests:
+          - not_null
+          - elementary.column_anomalies:
+              column_anomalies:
+                - average
+                - zero_count
+              config:
+                severity: warn
+          # - elementary.value_anomalies:
+          #     where_expression: "max_duration_seconds > 0"
+          #     anomaly_sensitivity: 2
+          #     config:
+          #       severity: warn
+
+      - name: avg_event_count_7d
+        description: "7-day moving average of event counts."
+        tests:
+          - not_null
+          - elementary.column_anomalies:
+              column_anomalies:
+                - average
+                - zero_count
+              config:
+                severity: warn
+      - name: stddev_event_count_7d
+        description: "Standard deviation of event counts over the last 7 days."
+        tests:
+          - not_null
+          - elementary.column_anomalies:
+              column_anomalies:
+                - zero_count 
+              config:
+                severity: warn
+
+      - name: avg_duration_7d
+        description: "7-day moving average of video play durations."
+        tests:
+          - not_null
+          - elementary.column_anomalies:
+              column_anomalies:
+                - average
+                - zero_count
+              config:
+                severity: warn
+
+      - name: stddev_duration_7d
+        description: "Standard deviation of video play durations over the last 7 days."
+        tests:
+          - not_null
+          - elementary.column_anomalies:
+              column_anomalies:
+                - null_count
+                - zero_count
+              config:
+                severity: warn
+          

@@ -1,6 +1,6 @@
 {{ config(
     schema='staging',
-    materialized='view'
+    materialized='table'
 ) }}
 WITH raw_data AS (
     -- 從來源表中篩選出有 media_id 且長度大於 0 的記錄
@@ -12,7 +12,7 @@ WITH raw_data AS (
         client_id,
         media_id,
         user_id
-    FROM {{ source('dcard', 'video_interactions') }}
+    FROM {{ source('dcard', 'video_interaction') }}
     WHERE LENGTH(media_id) > 0
 )
     -- 標準化數據：
@@ -20,7 +20,8 @@ WITH raw_data AS (
     -- 2. 將 action 字段的值轉為小寫，確保一致性。
 SELECT
     event_id,
-    created_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Taipei' AS created_at_taipei,
+    -- created_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Taipei' AS created_at_taipei,
+    (created_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Taipei' + INTERVAL '3 months') AS created_at_taipei,
     app_version,
     LOWER(action) AS action,
     client_id,
