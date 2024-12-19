@@ -9,3 +9,4 @@ logs/
 *.html
 edr_target/
 logs/dbt.log
+dbt/dcard/package-lock.yml
